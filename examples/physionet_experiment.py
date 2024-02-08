@@ -1,3 +1,4 @@
+#%%
 # load physionet from mne
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,7 +28,8 @@ from cmmn.data import load_sleep_physionet, extract_epochs
 from cmmn import CMMN
 
 mne.set_log_level("ERROR")
-device = "cuda:1" if torch.cuda.is_available() else "cpu"
+#device = "cuda:1" if torch.cuda.is_available() else "cpu" #why did they use cuda:1?
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load data
 # Select 68 subjects but use only 60 of them
@@ -91,7 +93,7 @@ for seed in range(10):
     y_target = [y_all[i] for i in subjects_target]
 
     # train data without CMMN
-    n_channels = X_train[0].shape[1]
+    n_channels = X_train[0].shape[1] # so the c is the num of channels in CMMN class
     X_train_concat = np.concatenate(X_train, axis=0)
     y_train_concat = np.concatenate(y_train, axis=0)
     X_val_concat = np.concatenate(X_val, axis=0)
@@ -99,55 +101,66 @@ for seed in range(10):
 
     valid_dataset = Dataset(X_val_concat, y_val_concat)
 
-    class_weights = compute_class_weight(
-        "balanced", classes=np.unique(y_train_concat), y=y_train_concat
-    )
-    module = SleepStagerChambon2018(
-        n_chans=n_channels,
-        sfreq=sfreq,
-    )
-    clf = NeuralNetClassifier(
-        module=module,
-        max_epochs=max_epochs,
-        batch_size=batch_size,
-        criterion=nn.CrossEntropyLoss(
-            weight=torch.Tensor(class_weights).to(device)
-        ),
-        optimizer=torch.optim.Adam,
-        iterator_train__shuffle=True,
-        optimizer__lr=lr,
-        device=device,
-        train_split=predefined_split(valid_dataset),
-        callbacks=[
-            (
-                "early_stopping",
-                EarlyStopping(
-                    monitor="valid_loss", patience=patience, load_best=True
-                ),
-            )
-        ],
-    )
+    # class_weights = compute_class_weight(
+    #     "balanced", classes=np.unique(y_train_concat), y=y_train_concat
+    # )
+    # module = SleepStagerChambon2018(
+    #     n_chans=n_channels,
+    #     sfreq=sfreq,
+    # )
+    # clf = NeuralNetClassifier(
+    #     module=module,
+    #     max_epochs=max_epochs,
+    #     batch_size=batch_size,
+    #     criterion=nn.CrossEntropyLoss(
+    #         weight=torch.Tensor(class_weights).to(device)
+    #     ),
+    #     optimizer=torch.optim.Adam,
+    #     iterator_train__shuffle=True,
+    #     optimizer__lr=lr,
+    #     device=device,
+    #     train_split=predefined_split(valid_dataset),
+    #     callbacks=[
+    #         (
+    #             "early_stopping",
+    #             EarlyStopping(
+    #                 monitor="valid_loss", patience=patience, load_best=True
+    #             ),
+    #         )
+    #     ],
+    # )
+    #
+    # clf.fit(X=X_train_concat, y=y_train_concat)
+    #
+    # for i in range(len(X_target)):
+    #
+    #     y_pred = clf.predict(X_target[i])
+    #     bacc = balanced_accuracy_score(y_target[i], y_pred)
+    #
+    #     results.append(
+    #         {
+    #             "subject": subjects_target[i],
+    #             "bacc": bacc,
+    #             "method":
+    #             "No CMMN"
+    #         }
+    #     )
 
-    clf.fit(X=X_train_concat, y=y_train_concat)
+    # transformed data with CMMN - aka the portion I care about.
+    # make sure that my data is in the right format, then just call this.
 
-    for i in range(len(X_target)):
+    print('X_train.shape: ',X_train.shape)
+    print('X_val.shape: ',X_val.shape)
+    print('X_train[0].shape: ',X_train[0].shape)
 
-        y_pred = clf.predict(X_target[i])
-        bacc = balanced_accuracy_score(y_target[i], y_pred)
 
-        results.append(
-            {
-                "subject": subjects_target[i],
-                "bacc": bacc,
-                "method":
-                "No CMMN"
-            }
-        )
-
-    # transformed data with CMMN
     cmmn = CMMN(filter_size=128, fs=100)
     X_train_transformed = cmmn.fit_transform(X_train)
     X_val_transformed = cmmn.transform(X_val)
+
+    print('X_train_transformed.shape: ',X_train_transformed.shape)
+    print('X_val_transformed.shape: ',X_val_transformed.shape)
+    print('X_train_transformed[0].shape: ',X_train_transformed[0].shape)
 
     # train data with CMMN
     X_train_concat = np.concatenate(X_train_transformed, axis=0)
@@ -155,6 +168,7 @@ for seed in range(10):
 
     valid_dataset = Dataset(X_val_concat, y_val_concat)
 
+#%%
     class_weights = compute_class_weight(
         "balanced", classes=np.unique(y_train_concat), y=y_train_concat
     )
@@ -194,7 +208,7 @@ for seed in range(10):
         results.append(
             {"subject": subjects_target[i], "bacc": bacc, "method": "CMMN"}
         )
-
+#%%
 df = pd.DataFrame(results)
 fig = plt.figure(figsize=(4, 2.5))
 sns.boxplot(
