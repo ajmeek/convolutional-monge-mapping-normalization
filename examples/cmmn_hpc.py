@@ -50,9 +50,33 @@ for subj in emotion_subj_list:
     emotion_five_min.append(icaact)
 
 # now load all of cue data
+cue = []
+
+for subj in cue_subj_list:
+    subj_data = np.load(f'../data/cue_resampled_to_emotion/cue_subj_{subj}_chunked.npz') # check file path.
+    icaact = subj_data['icaact']
+    channels, time = icaact.shape
+    #icaact = icaact[:, :7680*10] # 30 seconds times ten = 5 minutes, actually let's map all of them
+    icaact = icaact.reshape(-1, 63, 7680)
+    assert icaact.shape == (time // 7680, 63, 7680)
+
+    cue.append(icaact)
 
 # check conceptual understanding here first before moving on.
 # CMMN learns a filter for each of the emotion subjects.
 # How does it know which one to use for cue? diff numb of subjects there.
 
 # Dr. B and I discussed this yesterday, but review it again to fully internalize.
+
+# now fit the CMMN model to the emotion data
+cmmn = CMMN()
+cmmn.fit(emotion_five_min)
+cue_chunked_transformed = cmmn.transform(cue)
+
+# now that cue has been transformed, put it each subj back into original shape and save
+for i, subj in enumerate(cue_subj_list):
+    chunks, channels, time = cue_chunked_transformed[i].shape
+    icaact_reformed = cue_chunked_transformed[i].reshape(63, -1)
+    assert icaact_reformed.shape == (63, chunks * time)
+
+    np.savez(f'../data/cue_mapped/cue_subj_{subj}_cmmn.npz', icaact=icaact_reformed)
