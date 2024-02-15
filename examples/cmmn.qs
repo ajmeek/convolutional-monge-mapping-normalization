@@ -16,6 +16,9 @@ vpkg_devrequire intel-python/2022u1:python3
 source activate /work/cniel/ajmeek/bowaves_cmmn/convolutional-monge-mapping-normalization/venv/
 # pip install -r ../requirements.txt
 
+# check version
+python --version
+
 # Run bash / python script below
 
 python cmmn_hpc.py
