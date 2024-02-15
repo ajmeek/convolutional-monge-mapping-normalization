@@ -13,7 +13,7 @@
 #export UD_JOB_EXIT_FN_SIGNALS="SIGTERM EXIT"
 
 vpkg_devrequire intel-python/2022u1:python3
-source activate /work/cniel/ajmeek/bowaves_cmmn/venv/
+source activate /work/cniel/ajmeek/bowaves_cmmn/convolutional-monge-mapping-normalization/venv/
 pip install -r ../requirements.txt
 
 # Run bash / python script below
