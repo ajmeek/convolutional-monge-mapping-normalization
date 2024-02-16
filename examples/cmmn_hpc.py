@@ -1,4 +1,9 @@
 #imports
+import pyrootutils
+
+pyrootutils.set_root(path='/work/cniel/ajmeek/bowaves_cmmn/convolutional-monge-mapping-normalization',
+                     pythonpath=True)
+
 import numpy as np
 from cmmn import CMMN
 
