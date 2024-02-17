@@ -48,9 +48,9 @@ for subj in cue_subj_list:
     chunks, channels, time = icaact.shape
     print('chunks, channels, time:', chunks, channels, time)
     #icaact = icaact[:, :7680*10] # 30 seconds times ten = 5 minutes, actually let's map all of them
-    icaact = icaact.reshape(-1, 63, 7680)
+    # icaact = icaact.reshape(-1, 63, 7680)
     print('icaact shape:', icaact.shape)
-    assert icaact.shape == (time // 7680, 63, 7680)
+    assert icaact.shape == (chunks, 63, 7680)
 
     cue.append(icaact)
 
