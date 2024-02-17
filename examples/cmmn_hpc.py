@@ -46,8 +46,10 @@ for subj in cue_subj_list:
     subj_data = np.load(f'../data/cue_resampled_to_emotion/cue_subj_{subj}_chunked.npz') # check file path.
     icaact = subj_data['icaact']
     chunks, channels, time = icaact.shape
+    print('chunks, channels, time:', chunks, channels, time)
     #icaact = icaact[:, :7680*10] # 30 seconds times ten = 5 minutes, actually let's map all of them
     icaact = icaact.reshape(-1, 63, 7680)
+    print('icaact shape:', icaact.shape)
     assert icaact.shape == (time // 7680, 63, 7680)
 
     cue.append(icaact)
