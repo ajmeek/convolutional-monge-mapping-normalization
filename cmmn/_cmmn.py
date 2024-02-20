@@ -86,6 +86,11 @@ class CMMN(ABC):
 
         print('psd.shape:', psd.shape)
         print('psd.dtype:', psd.dtype)
+        print('psd:', psd)
+        for i in range(len(psd)):
+            print('psd[i].shape:', psd[i].shape)
+            print('psd[i].dtype:', psd[i].dtype)
+            print('psd[i]:', psd[i])
 
         psd = psd.astype(np.float64) #added this line. hope to fix np.sqrt(psd error in line 90)
         if self.weights is None:
