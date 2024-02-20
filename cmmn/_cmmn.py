@@ -89,7 +89,8 @@ class CMMN(ABC):
 
         psd = psd.astype(np.float64) #added this line. hope to fix np.sqrt(psd error in line 90)
         if self.weights is None:
-            weights = np.ones(psd.shape, dtype=X[0].dtype) / K
+            #weights = np.ones(psd.shape, dtype=X[0].dtype) / K
+            weights = np.ones(psd.shape, dtype=psd.dtype) / K
 
         barycenter = np.sum(weights * np.sqrt(psd), axis=0) ** 2
         return barycenter
