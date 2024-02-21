@@ -92,7 +92,7 @@ class CMMN(ABC):
             print('psd[i].dtype:', psd[i].dtype)
             print('psd[i]:', psd[i])
 
-        psd = psd.astype(np.float64) #added this line. hope to fix np.sqrt(psd error in line 90)
+        #psd = psd.astype(np.float64) #added this line. hope to fix np.sqrt(psd error in line 90)
         if self.weights is None:
             #weights = np.ones(psd.shape, dtype=X[0].dtype) / K
             weights = np.ones(psd.shape, dtype=psd.dtype) / K
