@@ -97,7 +97,17 @@ class CMMN(ABC):
             #weights = np.ones(psd.shape, dtype=X[0].dtype) / K
             weights = np.ones(psd.shape, dtype=psd.dtype) / K
 
-        barycenter = np.sum(weights * np.sqrt(psd), axis=0) ** 2
+        # description of error:
+        """
+        psd is an ndarray of ndarrays. So when it calls np.sqrt below, the elements it would try to square root are ndarrays, not numbers.
+        Try taking sqrt of each individual psd and then passing to weights.
+        """
+        psd_sqrt = []
+        for i in range(len(psd)):
+            psd_sqrt.append(np.sqrt(psd[i]))
+        psd_sqrt = np.array(psd_sqrt)
+        #barycenter = np.sum(weights * np.sqrt(psd), axis=0) ** 2
+        barycenter = np.sum(weights * psd_sqrt, axis=0) ** 2
         return barycenter
 
     def compute_filter(self, X):
