@@ -93,15 +93,25 @@ class CMMN(ABC):
             print('psd[i]:', psd[i])
 
         #psd = psd.astype(np.float64) #added this line. hope to fix np.sqrt(psd error in line 90)
-        if self.weights is None:
-            #weights = np.ones(psd.shape, dtype=X[0].dtype) / K
-            weights = np.ones(psd.shape, dtype=psd.dtype) / K
+        # if self.weights is None:
+        #     #weights = np.ones(psd.shape, dtype=X[0].dtype) / K
+        #     weights = np.ones(psd.shape, dtype=psd.dtype) / K
 
         # description of error:
         """
         psd is an ndarray of ndarrays. So when it calls np.sqrt below, the elements it would try to square root are ndarrays, not numbers.
-        Try taking sqrt of each individual psd and then passing to weights.
+        Try taking sqrt of each individual psd and then passing to weights. 
+        
+        Additionally, as I understand their actual algorithm from the paper, the number of signals (channels in my ICs)
+        does not need to be the same for each source domain. However, in their code they assume that it is due to inability
+        of adding inhomogenous shapes. Fix this.
+        
+        Make weights into a list of right size
         """
+
+        if self.weights is None:
+            weights = [np.ones(psd[i].shape, dtype=psd[i].dtype) / K for i in range(len(psd))]
+
         psd_sqrt = []
         for i in range(len(psd)):
             psd_sqrt.append(np.sqrt(psd[i]))
