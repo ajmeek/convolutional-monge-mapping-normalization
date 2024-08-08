@@ -1,8 +1,8 @@
 #imports
-import pyrootutils
+#import pyrootutils
 
-pyrootutils.set_root(path='/work/cniel/ajmeek/bowaves_cmmn/convolutional-monge-mapping-normalization',
-                     pythonpath=True)
+#pyrootutils.set_root(path='/work/cniel/ajmeek/bowaves_cmmn/convolutional-monge-mapping-normalization',
+#                     pythonpath=True)
 
 import numpy as np
 from cmmn import CMMN
@@ -10,9 +10,10 @@ from cmmn import CMMN
 # their tutorial imports above, my imports below
 
 # emotion only missing subj 22
-emotion_subj_list = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35']
+# testing with just a few subjects
+emotion_subj_list = ['01']#, '02']#, '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35']
 
-cue_subj_list = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+cue_subj_list = ['01']#, '02']#, '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 
 # load in the first five minutes of each IC from each emotion subject
