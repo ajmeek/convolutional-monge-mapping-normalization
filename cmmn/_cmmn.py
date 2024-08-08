@@ -25,7 +25,12 @@ class CMMN(ABC):
         """
         if len(X[0].shape) == 3:
             # Reduce the number of dimension to (C, T)
+            print('X[0].shape:', X[0].shape)
             X = [np.concatenate(X[i], axis=-1) for i in range(len(X))]
+
+            # the above line is causing the program to crash - my guess? not enough vram.
+            # redo with only a handful of the total subjects.
+            print('X[0].shape:', X[0].shape)
 
         self.compute_barycenter(X)
 
