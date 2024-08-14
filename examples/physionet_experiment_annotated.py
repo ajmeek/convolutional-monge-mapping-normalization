@@ -157,10 +157,20 @@ y_val_concat = np.concatenate(y_val, axis=0)
 #     )
 
 # transformed data with CMMN
+'''
+X_train is a list of 8 subjs, each of shape (num_epochs, 2, 3000). Because time chunks are 30 seconds.
+so X_train[0] is (2641, 2, 3000). 2 is the num of channels
+
+
+'''
 cmmn = CMMN(filter_size=128, fs=100)
 X_train_transformed = cmmn.fit_transform(X_train)
 X_val_transformed = cmmn.transform(X_val)
 
+
+"""
+X_train transformed is a list of 8 subjs, with same shape. so X_train_transformed[0] is still (2641, 2, 3000).
+"""
 # train data with CMMN
 X_train_concat = np.concatenate(X_train_transformed, axis=0)
 X_val_concat = np.concatenate(X_val_transformed, axis=0)
